@@ -1,5 +1,5 @@
 //
-//  AddSubviewViewController.swift
+//  AddSubviewExampleViewController.swift
 //  ApusUIDemo
 //
 //  Created by SwiftDevelop on 10/24/25.
@@ -9,8 +9,19 @@ import UIKit
 import SwiftUI
 import ApusUI
 
-final class AddSubviewsViewController: UIViewController {
+final class AddSubviewExampleViewController: UIViewController {
 
+    // MARK: UI Components
+    
+    private let whiteView: UIView = {
+        UIView()
+            .backgroundColor(.white)
+            .frame(width: 50, height: 50)
+            .center()
+    }()
+    
+    // MARK: Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,17 +39,14 @@ final class AddSubviewsViewController: UIViewController {
                     }
                     .center()
                 
-                UIView()
-                    .backgroundColor(.white)
-                    .frame(width: 50, height: 50)
-                    .center()
+                whiteView
             }
     }
 }
 
 #Preview {
     UIViewControllerPreview {
-        AddSubviewsViewController()
+        AddSubviewExampleViewController()
     }
     .edgesIgnoringSafeArea(.all)
 }
