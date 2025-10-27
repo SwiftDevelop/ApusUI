@@ -34,10 +34,12 @@ final class StackExampleViewController: UIViewController {
 //                        UIView()
 //                            .backgroundColor(.purple)
 //                    }
+                
 //                    .arrangedSubviews(colors.count) { index in
 //                        UIView()
 //                            .backgroundColor(colors[index])
 //                    }
+                
                     .arrangedSubviews(colors) { color in
                         UIStackView()
                             .arrangedSubviews(10) { index in
