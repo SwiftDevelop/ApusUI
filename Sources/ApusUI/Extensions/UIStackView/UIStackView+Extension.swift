@@ -48,7 +48,7 @@ public extension UIStackView {
         }
         return self
     }
-
+    
     @discardableResult
     func arrangedSubviews(_ count: Int, @SubviewBuilder _ builder: (Int) -> [UIView]) -> Self {
         for i in 0..<count {

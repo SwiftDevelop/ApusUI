@@ -17,4 +17,14 @@ public extension UIView {
         }
         return self
     }
+    
+    @discardableResult
+    func subviews(@SubviewBuilder _ builder: (Self) -> [UIView]) -> Self {
+        let views = builder(self)
+        views.forEach { subview in
+            self.addSubview(subview)
+            subview.applyPendingConstraints()
+        }
+        return self
+    }
 }

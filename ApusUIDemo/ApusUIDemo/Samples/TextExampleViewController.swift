@@ -2,7 +2,7 @@
 //  TextExampleViewController.swift
 //  ApusUI
 //
-//  Created by jjp3421 on 10/27/25.
+//  Created by SwiftDevelop on 10/27/25.
 //
 
 import UIKit
