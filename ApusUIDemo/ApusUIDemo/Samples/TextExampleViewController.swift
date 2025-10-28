@@ -5,7 +5,6 @@
 //  Created by SwiftDevelop on 10/27/25.
 //
 
-import UIKit
 import SwiftUI
 import ApusUI
 

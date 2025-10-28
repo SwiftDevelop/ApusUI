@@ -32,8 +32,8 @@ private final class KVOObserver: NSObject {
 
 public extension UIScrollView {
     @discardableResult
-    func contentInset(_ insets: UIEdgeInsets) -> Self {
-        self.contentInset = insets
+    func contentInset(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
+        self.contentInset = .init(top: top, left: left, bottom: bottom, right: right)
         return self
     }
 

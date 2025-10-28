@@ -5,7 +5,6 @@
 //  Created by SwiftDevelop on 10/27/25.
 //
 
-import UIKit
 import SwiftUI
 import ApusUI
 
@@ -17,7 +16,7 @@ final class ScrollExampleViewController: UIViewController {
         view
             .subviews {
                 UIScrollView()
-                    .contentInset(.init(top: 0, left: 16, bottom: 0, right: -16))
+                    .contentInset(left: 16, right: -16)
                     .subviews {
                         UIStackView(axis: .vertical)
                             .arrangedSubviews(100) { index in
