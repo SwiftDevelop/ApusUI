@@ -10,7 +10,7 @@ import UIKit
 // MARK: - Initialization
 public extension UIStackView {
     convenience init(
-        axis: NSLayoutConstraint.Axis = .horizontal,
+        _ axis: NSLayoutConstraint.Axis = .horizontal,
         alignment: UIStackView.Alignment = .fill,
         spacing: CGFloat = 0
     ) {
@@ -19,19 +19,46 @@ public extension UIStackView {
         self.alignment = alignment
         self.spacing = spacing
     }
+    
+    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, @SubviewBuilder _ builder: () -> [UIView]) {
+        self.init()
+        self.axis = axis
+        self.arrangedSubviews(builder)
+    }
+    
+    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, @SubviewBuilder _ builder: (Self) -> [UIView]) {
+        self.init()
+        self.axis = axis
+        self.arrangedSubviews(builder)
+    }
+    
+    convenience init<T>(_ axis: NSLayoutConstraint.Axis = .horizontal, data: [T], @SubviewBuilder _ builder: (T) -> [UIView]) {
+        self.init()
+        self.axis = axis
+        self.arrangedSubviews(data, builder)
+    }
+    
+    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, count: Int, @SubviewBuilder _ builder: (Int) -> [UIView]) {
+        self.init()
+        self.axis = axis
+        self.arrangedSubviews(count, builder)
+    }
 }
 
-// MARK: - Extensions
+// MARK: - ArragedSubview
 public extension UIStackView {
     @discardableResult
-    func distribution(_ distribution: UIStackView.Distribution) -> Self {
-        self.distribution = distribution
+    func arrangedSubviews(@SubviewBuilder _ builder: () -> [UIView]) -> Self {
+        let views = builder()
+        views.forEach { view in
+            self.addArrangedSubview(view)
+        }
         return self
     }
     
     @discardableResult
-    func arrangedSubviews(@SubviewBuilder _ builder: () -> [UIView]) -> Self {
-        let views = builder()
+    func arrangedSubviews(@SubviewBuilder _ builder: (Self) -> [UIView]) -> Self {
+        let views = builder(self)
         views.forEach { view in
             self.addArrangedSubview(view)
         }
@@ -57,6 +84,33 @@ public extension UIStackView {
                 self.addArrangedSubview(view)
             }
         }
+        return self
+    }
+}
+
+// MARK: - Extensions
+public extension UIStackView {
+    @discardableResult
+    func axis(_ axis: NSLayoutConstraint.Axis) -> Self {
+        self.axis = axis
+        return self
+    }
+    
+    @discardableResult
+    func alignment(_ alignment: UIStackView.Alignment) -> Self {
+        self.alignment = alignment
+        return self
+    }
+    
+    @discardableResult
+    func distribution(_ distribution: UIStackView.Distribution) -> Self {
+        self.distribution = distribution
+        return self
+    }
+    
+    @discardableResult
+    func spacing(_ spacing: CGFloat) -> Self {
+        self.spacing = spacing
         return self
     }
 }

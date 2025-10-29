@@ -18,12 +18,12 @@ final class TextExampleViewController: UIViewController {
 //                UILabel("Hello, ApusUI!")
 //                    .center()
                 
-                UIStackView(axis: .vertical, alignment: .center)
-                    .arrangedSubviews(10) { index in
-                        UILabel("Hello, ApusUI \(index)")
-                    }
-                    .distribution(.fillEqually)
-                    .padding()
+                UIStackView(.vertical, count: 10) { index in
+                    UILabel("Hello, ApusUI \(index)")
+                }
+                .alignment(.center)
+                .distribution(.fillEqually)
+                .padding()
             }
     }
 }

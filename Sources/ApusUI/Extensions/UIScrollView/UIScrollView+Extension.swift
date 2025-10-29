@@ -11,8 +11,7 @@ import UIKit
     static var contentOffsetObservations: UInt8 = 0
 }
 
-@MainActor
-private final class KVOObserver: NSObject {
+@MainActor private final class KVOObserver: NSObject {
     private let action: @Sendable (CGPoint) -> Void
     private var observation: NSKeyValueObservation?
     
@@ -30,6 +29,20 @@ private final class KVOObserver: NSObject {
     }
 }
 
+// MARK: - Initialization
+public extension UIScrollView {
+    convenience init(@SubviewBuilder _ builder: () -> [UIView]) {
+        self.init()
+        self.subviews(builder)
+    }
+    
+    convenience init(@SubviewBuilder _ builder: (UIScrollView) -> [UIView]) {
+        self.init()
+        self.subviews(builder)
+    }
+}
+
+// MARK: - Extensions
 public extension UIScrollView {
     @discardableResult
     func contentInset(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {

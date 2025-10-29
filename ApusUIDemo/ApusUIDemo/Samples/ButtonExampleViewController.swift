@@ -22,7 +22,7 @@ final class ButtonExampleViewController: UIViewController {
                         self?.handleButtonAction(button)
                     }
                     .subviews {
-                        UIStackView(axis: .horizontal, alignment: .center, spacing: 4)
+                        UIStackView(alignment: .center, spacing: 4)
                             .arrangedSubviews {
                                 iconImageView
                                     .image(systemName: "lock.fill")

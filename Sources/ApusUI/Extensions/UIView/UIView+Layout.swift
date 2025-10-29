@@ -7,11 +7,13 @@
 
 import UIKit
 
+// MARK: - AssociatedKeys
 @MainActor private enum AssociatedKeys {
     static var pendingConstraints: UInt8 = 0
     static var ignoredSafeAreaEdges: UInt8 = 1
 }
 
+// MARK: - Internal Extensions
 internal extension UIView {
     fileprivate var pendingConstraints: [() -> Void] {
         get {
@@ -39,6 +41,17 @@ internal extension UIView {
         }
     }
     
+    fileprivate func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            if let viewController = nextResponder as? UIViewController {
+                return viewController
+            }
+            responder = nextResponder
+        }
+        return nil
+    }
+    
     func applyPendingConstraints() {
         pendingConstraints.forEach { $0() }
         pendingConstraints.removeAll()
@@ -47,49 +60,6 @@ internal extension UIView {
 
 // MARK: - Padding
 public extension UIView {
-    @discardableResult
-    func padding(_ insets: UIEdgeInsets) -> Self {
-        addPendingConstraint { [weak self] in
-            guard let self, let superview else { return }
-            translatesAutoresizingMaskIntoConstraints = false
-            
-            let ignoredEdges = ignoredSafeAreaEdges
-            
-            // Safe Area 기준으로 할지 superview 기준으로 할지 결정
-            let topAnchor: NSLayoutYAxisAnchor
-            let leadingAnchor: NSLayoutXAxisAnchor
-            let trailingAnchor: NSLayoutXAxisAnchor
-            let bottomAnchor: NSLayoutYAxisAnchor
-            
-            if let viewController = findViewController() {
-                let safeArea = viewController.view.safeAreaLayoutGuide
-                topAnchor = ignoredEdges.contains(.top) ? superview.topAnchor : safeArea.topAnchor
-                leadingAnchor = ignoredEdges.contains(.left) ? superview.leadingAnchor : safeArea.leadingAnchor
-                trailingAnchor = ignoredEdges.contains(.right) ? superview.trailingAnchor : safeArea.trailingAnchor
-                bottomAnchor = ignoredEdges.contains(.bottom) ? superview.bottomAnchor : safeArea.bottomAnchor
-            } else {
-                // ViewController를 못 찾으면 superview 기준
-                topAnchor = superview.topAnchor
-                leadingAnchor = superview.leadingAnchor
-                trailingAnchor = superview.trailingAnchor
-                bottomAnchor = superview.bottomAnchor
-            }
-            
-            NSLayoutConstraint.activate([
-                self.topAnchor.constraint(equalTo: topAnchor, constant: insets.top),
-                self.leadingAnchor.constraint(equalTo: leadingAnchor, constant: insets.left),
-                self.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -insets.right),
-                self.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -insets.bottom)
-            ])
-        }
-        return self
-    }
-    
-    @discardableResult
-    func padding(_ all: CGFloat = 0) -> Self {
-        return padding(UIEdgeInsets(top: all, left: all, bottom: all, right: all))
-    }
-    
     @discardableResult
     func padding(top: CGFloat? = nil, left: CGFloat? = nil, bottom: CGFloat? = nil, right: CGFloat? = nil) -> Self {
         addPendingConstraint { [weak self] in
@@ -140,13 +110,18 @@ public extension UIView {
     }
     
     @discardableResult
+    func padding(_ all: CGFloat = 0) -> Self {
+        return padding(top: all, left: all, bottom: all, right: all)
+    }
+    
+    @discardableResult
     func padding(horizontal: CGFloat) -> Self {
-        return padding(UIEdgeInsets(top: 0, left: horizontal, bottom: 0, right: horizontal))
+        return padding(left: horizontal, right: horizontal)
     }
     
     @discardableResult
     func padding(vertical: CGFloat) -> Self {
-        return padding(UIEdgeInsets(top: vertical, left: 0, bottom: vertical, right: 0))
+        return padding(top: vertical, bottom: vertical)
     }
 }
 
@@ -212,18 +187,3 @@ public extension UIView {
         return self
     }
 }
-
-// MARK: - Helper to find ViewController
-public extension UIView {
-    fileprivate func findViewController() -> UIViewController? {
-        var responder: UIResponder? = self
-        while let nextResponder = responder?.next {
-            if let viewController = nextResponder as? UIViewController {
-                return viewController
-            }
-            responder = nextResponder
-        }
-        return nil
-    }
-}
-

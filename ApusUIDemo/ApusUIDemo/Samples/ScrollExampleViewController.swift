@@ -15,24 +15,21 @@ final class ScrollExampleViewController: UIViewController {
         
         view
             .subviews {
-                UIScrollView()
-                    .contentInset(left: 16, right: -16)
-                    .subviews {
-                        UIStackView(axis: .vertical)
-                            .arrangedSubviews(100) { index in
-                                UILabel("Hello, ApusUI! \(index)")
-                                    .frame(height: 50)
-                                UIView()
-                                    .backgroundColor(.lightGray)
-                                    .frame(height: 1)
-                            }
-                            .frame(width: view.frame.width)
-                            .padding()
+                UIScrollView {
+                    UIStackView(.vertical, count: 100) { index in
+                        UILabel("Hello, ApusUI! \(index)")
+                            .frame(height: 50)
+                        UIView(.lightGray)
+                            .frame(height: 1)
                     }
-                    .onContentOffsetChange { point in
-                        print(point)
-                    }
+                    .frame(width: view.frame.width)
                     .padding()
+                }
+                .contentInset(left: 16, right: -16)
+                .onContentOffsetChange { point in
+                    print(point)
+                }
+                .padding()
             }
     }
 }

@@ -1,12 +1,33 @@
 //
-//  UIView+Style.swift
+//  UIView+Extension.swift
 //  ApusUI
 //
-//  Created by SwiftDevelop on 10/24/25.
+//  Created by SwiftDevelop on 10/28/25.
 //
 
 import UIKit
 
+// MARK: - Initialization
+public extension UIView {
+    convenience init(_ color: UIColor? = nil) {
+        self.init()
+        self.backgroundColor = color
+    }
+    
+    convenience init(_ color: UIColor? = nil, @SubviewBuilder _ builder: () -> [UIView]) {
+        self.init()
+        self.backgroundColor = color
+        self.subviews(builder)
+    }
+    
+    convenience init(_ color: UIColor? = nil, @SubviewBuilder _ builder: (UIView) -> [UIView]) {
+        self.init()
+        self.backgroundColor = color
+        self.subviews(builder)
+    }
+}
+
+// MARK: - Extension
 public extension UIView {
     @discardableResult
     func backgroundColor(_ color: UIColor) -> Self {

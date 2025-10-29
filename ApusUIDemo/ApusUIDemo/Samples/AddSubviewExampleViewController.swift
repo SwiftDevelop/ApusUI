@@ -9,12 +9,11 @@ import SwiftUI
 import ApusUI
 
 final class AddSubviewExampleViewController: UIViewController {
-
+    
     // MARK: UI Components
     
     private let whiteView: UIView = {
-        UIView()
-            .backgroundColor(.white)
+        UIView(.white)
             .frame(width: 50, height: 50)
             .center()
     }()
@@ -27,18 +26,13 @@ final class AddSubviewExampleViewController: UIViewController {
         view
             .backgroundColor(.darkGray)
             .subviews {
-                UIView()
-                    .backgroundColor(.gray)
-                    .frame(width: 200, height: 200)
-                    .subviews {
-                        UIView()
-                            .backgroundColor(.lightGray)
-                            .frame(width: 100, height: 100)
-                            .center()
-                    }
-                    .center()
-                
-                whiteView
+                UIView(.gray) { view in
+                    UIView(.lightGray)
+                        .frame(width: 100, height: 100)
+                        .center()
+                }
+                .frame(width: 200, height: 200)
+                .center()
             }
     }
 }
