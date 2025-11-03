@@ -7,19 +7,17 @@
 
 import UIKit
 
-@MainActor private enum AssociatedKeys {
-    static var actionObservation: UInt8 = 0
-}
-
-private final class ActionWrapper {
-    let action: (UIButton) -> Void
-    
-    init(action: @escaping (UIButton) -> Void) {
-        self.action = action
+// MARK: - Initialization
+public extension UIButton {
+    convenience init(action: @escaping (UIButton) -> Void) {
+        self.init()
+        self.onAction(action)
     }
     
-    @objc func invoke(_ sender: UIButton) {
-        action(sender)
+    convenience init(@SubviewBuilder _ builder: () -> [UIView], action: @escaping (UIButton) -> Void) {
+        self.init()
+        self.subviews(builder)
+        self.onAction(action)
     }
 }
 
@@ -113,18 +111,6 @@ public extension UIButton {
         if var configuration = self.configuration {
             update(&configuration)
         }
-        return self
-    }
-    
-    @discardableResult
-    func addAction(for controlEvents: UIControl.Event = .touchUpInside, _ action: @escaping (UIButton) -> Void) -> Self {
-        let wrapper = ActionWrapper(action: action)
-        
-        var actions = objc_getAssociatedObject(self, &AssociatedKeys.actionObservation) as? [ActionWrapper] ?? []
-        actions.append(wrapper)
-        objc_setAssociatedObject(self, &AssociatedKeys.actionObservation, actions, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-        self.addTarget(wrapper, action: #selector(ActionWrapper.invoke(_:)), for: controlEvents)
         return self
     }
     

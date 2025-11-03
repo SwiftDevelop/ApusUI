@@ -32,7 +32,7 @@ final class TextExampleViewController: UIViewController {
                             .placeholder("텍스트를 입력하세요.")
                         
                         UIButton(.systemBlue)
-                            .addAction { [weak self] _ in
+                            .onAction { [weak self] _ in
                                 guard let self else { return }
                                 textLabel.text(textField.text ?? "")
                             }
@@ -52,7 +52,7 @@ final class TextExampleViewController: UIViewController {
                         .cornerRadius(12)
                     
                     UIButton(.systemBlue)
-                        .addAction { [weak self] _ in
+                        .onAction { [weak self] _ in
                             guard let self else { return }
                             textLabel.text(textView.text)
                         }
