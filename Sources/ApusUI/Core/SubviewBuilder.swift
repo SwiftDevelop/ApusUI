@@ -9,8 +9,8 @@ import UIKit
 
 @resultBuilder
 public struct SubviewBuilder {
-    public static func buildBlock(_ components: UIView...) -> [UIView] {
-        components
+    public static func buildBlock(_ components: [UIView]...) -> [UIView] {
+        components.flatMap { $0 }
     }
     
     public static func buildOptional(_ component: [UIView]?) -> [UIView] {
@@ -27,5 +27,13 @@ public struct SubviewBuilder {
     
     public static func buildArray(_ components: [[UIView]]) -> [UIView] {
         components.flatMap { $0 }
+    }
+    
+    public static func buildExpression(_ expression: UIView) -> [UIView] {
+        [expression]
+    }
+    
+    public static func buildExpression(_ expression: [UIView]) -> [UIView] {
+        expression
     }
 }
