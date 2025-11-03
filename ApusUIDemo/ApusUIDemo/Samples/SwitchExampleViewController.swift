@@ -21,9 +21,9 @@ final class SwitchExampleViewController: UIViewController {
         view.subviews {
             UIStackView(.vertical) {
                 textLabel
-                UISwitch { [weak self] isOn in
+                UISwitch(action: { [weak self] isOn in
                     self?.textLabel.text("Switch \(isOn ? "On" : "Off")")
-                }
+                })
                 .center()
             }
             .alignment(.center)

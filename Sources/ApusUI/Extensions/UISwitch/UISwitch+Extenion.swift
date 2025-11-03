@@ -29,7 +29,7 @@ private class ActionWrapper {
 
 // MARK: - Initialization
 public extension UISwitch {
-    convenience init(_ action: @escaping (Bool) -> Void) {
+    convenience init(action: @escaping (Bool) -> Void) {
         self.init()
         self.onChange(action)
     }
