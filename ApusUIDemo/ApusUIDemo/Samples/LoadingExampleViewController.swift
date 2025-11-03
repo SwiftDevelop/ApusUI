@@ -1,5 +1,5 @@
 //
-//  LoadingViewController.swift
+//  LoadingExampleViewController.swift
 //  ApusUI
 //
 //  Created by SwiftDevelop on 11/3/25.
@@ -8,7 +8,7 @@
 import SwiftUI
 import ApusUI
 
-final class LoadingViewController: UIViewController {
+final class LoadingExampleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +24,6 @@ final class LoadingViewController: UIViewController {
 
 #Preview {
     UIViewControllerPreview {
-        LoadingViewController()
+        LoadingExampleViewController()
     }
 }
