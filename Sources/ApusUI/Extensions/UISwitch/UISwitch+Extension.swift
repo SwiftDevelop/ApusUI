@@ -1,5 +1,5 @@
 //
-//  UISwitch+Extenion.swift
+//  UISwitch+Extension.swift
 //  ApusUI
 //
 //  Created by SwiftDevelop on 11/3/25.
@@ -35,7 +35,7 @@ public extension UISwitch {
     }
 }
 
-// MARK: - Extension
+// MARK: - Extensions
 public extension UISwitch {
     @discardableResult
     func isOn(_ on: Bool) -> Self {
