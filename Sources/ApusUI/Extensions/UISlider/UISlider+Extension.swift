@@ -27,6 +27,14 @@ private class ActionWrapper {
     }
 }
 
+// MARK: - Initialization
+public extension UISlider {
+    convenience init(action: @escaping (Float) -> Void) {
+        self.init()
+        self.onChange(action)
+    }
+}
+
 // MARK: - Extensions
 public extension UISlider {
     @discardableResult

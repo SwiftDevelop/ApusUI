@@ -59,22 +59,21 @@ final class SliderExampleViewController: UIViewController {
             UILabel(colorSet.rawValue)
                 .frame(width: 48)
             
-            UISlider()
-                .thumbTintColor(colorSet.tintColor)
-                .minimumTrackTintColor(colorSet.tintColor)
-                .onChange { [weak self] value in
-                    let colorValue = CGFloat(value * 255)
-                    switch colorSet {
-                    case .red:
-                        self?.red = colorValue
-                    case .green:
-                        self?.green = colorValue
-                    case .blue:
-                        self?.blue = colorValue
-                    }
-                    
-                    self?.updateUI()
+            UISlider(action: { [weak self] value in
+                let colorValue = CGFloat(value * 255)
+                switch colorSet {
+                case .red:
+                    self?.red = colorValue
+                case .green:
+                    self?.green = colorValue
+                case .blue:
+                    self?.blue = colorValue
                 }
+                
+                self?.updateUI()
+            })
+            .thumbTintColor(colorSet.tintColor)
+            .minimumTrackTintColor(colorSet.tintColor)
             
             makeValueLabel(colorSet: colorSet)
                 .frame(width: 40)
