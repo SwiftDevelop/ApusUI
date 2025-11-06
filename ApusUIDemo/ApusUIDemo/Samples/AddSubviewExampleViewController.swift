@@ -26,7 +26,7 @@ final class AddSubviewExampleViewController: UIViewController {
         view
             .backgroundColor(.darkGray)
             .subviews {
-                UIView(.gray) { view in
+                UIView(.gray) {
                     UIView(.lightGray)
                         .frame(width: 100, height: 100)
                         .center()

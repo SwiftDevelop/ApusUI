@@ -18,8 +18,6 @@ final class ButtonExampleViewController: UIViewController {
         view
             .subviews {
                 makeUnusingInit()
-//                makeUsingInitWithSubviews()
-//                makeUsingInitWithoutSubviews()
                     .backgroundColor(.systemBlue)
                     .frame(width: 200, height: 100)
                     .cornerRadius(16)
@@ -43,10 +41,10 @@ final class ButtonExampleViewController: UIViewController {
             }
     }
     
-    private func makeUsingInitWithSubviews() -> UIButton {
-        UIButton(action: { [weak self] button in
+    private func makeUsingInit() -> UIButton {
+        UIButton { [weak self] button in
             self?.handleButtonAction(button)
-        })
+        }
         .subviews {
             UIStackView(.horizontal) {
                 iconImageView
@@ -63,8 +61,10 @@ final class ButtonExampleViewController: UIViewController {
         }
     }
     
-    private func makeUsingInitWithoutSubviews() -> UIButton {
-        UIButton({
+    private func makeUsingInitWithSubviews() -> UIButton {
+        UIButton { [weak self] button in
+            self?.handleButtonAction(button)
+        } subviews: {
             UIStackView(.horizontal) {
                 iconImageView
                     .image(systemName: "lock.fill")
@@ -77,9 +77,7 @@ final class ButtonExampleViewController: UIViewController {
             .alignment(.center)
             .spacing(4)
             .center()
-        }, action: { [weak self] button in
-            self?.handleButtonAction(button)
-        })
+        }
     }
     
     private func handleButtonAction(_ sender: UIButton) {

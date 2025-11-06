@@ -9,18 +9,17 @@ import UIKit
 
 // MARK: - Initialization
 public extension UIView {
+    convenience init(@SubviewBuilder _ builder: () -> [UIView]) {
+        self.init()
+        self.subviews(builder)
+    }
+    
     convenience init(_ color: UIColor? = nil) {
         self.init()
         self.backgroundColor = color
     }
     
     convenience init(_ color: UIColor? = nil, @SubviewBuilder _ builder: () -> [UIView]) {
-        self.init()
-        self.backgroundColor = color
-        self.subviews(builder)
-    }
-    
-    convenience init(_ color: UIColor? = nil, @SubviewBuilder _ builder: (UIView) -> [UIView]) {
         self.init()
         self.backgroundColor = color
         self.subviews(builder)

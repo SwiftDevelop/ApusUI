@@ -14,10 +14,10 @@ public extension UIButton {
         self.onAction(action)
     }
     
-    convenience init(@SubviewBuilder _ builder: () -> [UIView], action: @escaping (UIButton) -> Void) {
+    convenience init(action: @escaping (UIButton) -> Void, @SubviewBuilder subviews builder: () -> [UIView]) {
         self.init()
-        self.subviews(builder)
         self.onAction(action)
+        self.subviews(builder)
     }
 }
 

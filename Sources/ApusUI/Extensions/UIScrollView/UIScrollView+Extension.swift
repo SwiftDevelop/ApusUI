@@ -31,11 +31,6 @@ import UIKit
 
 // MARK: - Initialization
 public extension UIScrollView {
-    convenience init(@SubviewBuilder _ builder: () -> [UIView]) {
-        self.init()
-        self.subviews(builder)
-    }
-    
     convenience init(@SubviewBuilder _ builder: (UIScrollView) -> [UIView]) {
         self.init()
         self.subviews(builder)
