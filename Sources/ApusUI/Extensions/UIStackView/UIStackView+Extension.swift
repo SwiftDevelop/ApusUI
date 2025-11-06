@@ -20,15 +20,17 @@ public extension UIStackView {
         self.spacing = spacing
     }
     
-    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, @SubviewBuilder _ builder: () -> [UIView]) {
+    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, spacing: CGFloat = 0, @SubviewBuilder _ builder: () -> [UIView]) {
         self.init()
         self.axis = axis
+        self.spacing = spacing
         self.arrangedSubviews(builder)
     }
     
-    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, @SubviewBuilder _ builder: (Self) -> [UIView]) {
+    convenience init(_ axis: NSLayoutConstraint.Axis = .horizontal, spacing: CGFloat = 0, @SubviewBuilder _ builder: (Self) -> [UIView]) {
         self.init()
         self.axis = axis
+        self.spacing = spacing
         self.arrangedSubviews(builder)
     }
     

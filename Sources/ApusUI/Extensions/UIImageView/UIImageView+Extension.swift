@@ -7,22 +7,6 @@
 
 import UIKit
 
-@MainActor private enum AssociatedKeys {
-    static var tapAction: UInt8 = 0
-}
-
-private final class TapActionWrapper {
-    let action: () -> Void
-    
-    init(action: @escaping () -> Void) {
-        self.action = action
-    }
-    
-    @objc func invoke() {
-        action()
-    }
-}
-
 // MARK: - Initialization
 public extension UIImageView {
     convenience init(named name: String) {
@@ -34,7 +18,7 @@ public extension UIImageView {
     }
 }
 
-// MARK: - Extensions
+// MARK: - Extension
 public extension UIImageView {
     @discardableResult
     func image(_ image: UIImage?) -> Self {
@@ -65,17 +49,4 @@ public extension UIImageView {
         self.tintColor = color
         return self
     }
-    
-    @discardableResult
-    func onTapGesture(_ action: @escaping () -> Void) -> Self {
-        self.isUserInteractionEnabled = true
-        let wrapper = TapActionWrapper(action: action)
-        objc_setAssociatedObject(self, &AssociatedKeys.tapAction, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-        let tapGesture = UITapGestureRecognizer(target: wrapper, action: #selector(TapActionWrapper.invoke))
-        self.addGestureRecognizer(tapGesture)
-        
-        return self
-    }
-
 }
