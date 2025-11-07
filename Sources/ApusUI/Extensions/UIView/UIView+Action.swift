@@ -25,6 +25,8 @@ private final class TapActionWrapper {
 
 // MARK: - Extension
 public extension UIView {
+    /// 뷰에 탭 제스처가 발생했을 때 실행될 액션을 추가합니다.
+    /// - Parameter action: 뷰가 탭되었을 때 실행될 클로저입니다.
     @discardableResult
     func onTapGesture(_ action: @escaping () -> Void) -> Self {
         self.isUserInteractionEnabled = true

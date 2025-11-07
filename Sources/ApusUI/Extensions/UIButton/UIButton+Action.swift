@@ -25,8 +25,12 @@ private final class ActionWrapper {
     }
 }
 
-// MARK: - Action Extensions
+// MARK: - Extension
 public extension UIButton {
+    /// 버튼에 대한 클로저 기반 액션을 추가합니다.
+    /// - Parameters:
+    ///   - controlEvents: 액션을 트리거할 UIControl 이벤트입니다. 기본값은 `.touchUpInside`입니다.
+    ///   - action: 버튼이 이벤트에 응답할 때 실행될 클로저입니다.
     @discardableResult
     func onAction(for controlEvents: UIControl.Event = .touchUpInside, _ action: @escaping (UIButton) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action)
