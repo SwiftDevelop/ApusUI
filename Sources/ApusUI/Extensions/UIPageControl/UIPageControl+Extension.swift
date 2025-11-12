@@ -58,9 +58,6 @@ public extension UIPageControl {
     @discardableResult
     func currentPage(_ page: Int) -> Self {
         self.currentPage = page
-        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.pageAction) as? ActionWrapper {
-            wrapper.invoke()
-        }
         return self
     }
     

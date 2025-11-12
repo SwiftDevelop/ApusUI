@@ -14,15 +14,17 @@ import UIKit
 
 // MARK: - KVOObserver
 @MainActor private final class KVOObserver: NSObject {
-    private let action: @Sendable (CGPoint) -> Void
+    private let action: @MainActor (CGPoint) -> Void
     private var observation: NSKeyValueObservation?
     
-    init(scrollView: UIScrollView, action: @escaping @Sendable (CGPoint) -> Void) {
+    init(scrollView: UIScrollView, action: @escaping @MainActor (CGPoint) -> Void) {
         self.action = action
         super.init()
         self.observation = scrollView.observe(\.contentOffset, options: [.new]) { [weak self] _, change in
             guard let self, let value = change.newValue else { return }
-            self.action(value)
+            DispatchQueue.main.async {
+                self.action(value)
+            }
         }
     }
     
@@ -89,7 +91,7 @@ public extension UIScrollView {
     /// - Parameter action: `contentOffset`의 새 `CGPoint` 값을 파라미터로 받는 클로저입니다.
     @MainActor
     @discardableResult
-    func onContentOffsetChange(_ action: @escaping @Sendable (CGPoint) -> Void) -> Self {
+    func onContentOffsetChange(_ action: @escaping @MainActor (CGPoint) -> Void) -> Self {
         var observers = objc_getAssociatedObject(self, &AssociatedKeys.contentOffsetObservations) as? [KVOObserver] ?? []
         
         let observer = KVOObserver(scrollView: self, action: action)
