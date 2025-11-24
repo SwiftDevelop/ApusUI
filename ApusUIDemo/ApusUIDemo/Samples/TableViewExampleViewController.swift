@@ -15,26 +15,25 @@ final class TableViewExampleViewController: UIViewController {
         let textes: [String]
     }
     
-//    private let items = Array(repeating: 0, count: 50)
-//    private let items = [
-//        ["Apple", "Awsome"], ["Banana", "Bycicle"], ["Car", "Cherry"]
-//    ]
-    private let items = [
+    private var items = [
         Item(title: "가", textes: ["가나", "가다", "가라", "가마", "가사", "가자"]),
         Item(title: "나", textes: ["나가", "나다", "나라", "나비", "나사"]),
         Item(title: "다", textes: ["다리", "다리미"]),
         Item(title: "라", textes: ["라디오"]),
         Item(title: "마", textes: ["마늘", "마차"]),
     ]
+    private var textes: [[String]] { items.map { $0.textes } }
+    
+    private let tableView: UITableView = {
+        UITableView(style: .grouped)
+            .register(cell: UITableViewCell.self)
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.subviews {
-            UITableView(style: .grouped)
-//                .dataSource(self)
-//                .delegate(self)
-                .register(cell: UITableViewCell.self)
+            tableView
                 .sectionHeader(height: 50) { [weak self] section in
                     UIView {
                         UILabel(self?.items[section].title)
@@ -42,42 +41,24 @@ final class TableViewExampleViewController: UIViewController {
                             .padding(bottom: 8)
                     }
                 }
-                .items(arrays: items.map({ $0.textes })) { tableView, indexPath, item in
+                .items(from: self, keyPath: \.textes) { tableView, indexPath, item in
                     let cell = tableView.dequeue(for: indexPath)
                     cell.textLabel?.text = item
                     return cell
                 }
                 .onSelect { [weak self] indexPath in
-                    print(self?.items[indexPath.section].textes[indexPath.item] ?? "")
+                    self?.updateItems()
                 }
                 .padding()
                 .edgesIgnoringSafeArea(.bottom)
         }
     }
+    
+    private func updateItems() {
+        items.append(Item(title: "바", textes: ["바나나", "바다", "바라"]))
+        tableView.reloadData()
+    }
 }
-
-// MARK: - UITableViewDelegate
-//extension TableViewExampleViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(indexPath)
-//    }
-//}
-
-// MARK: - UITableViewDataSource
-//extension TableViewExampleViewController: UITableViewDataSource {
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return items.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return items[section].count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeue(for: indexPath)
-//        return cell
-//    }
-//}
 
 // MARK: - Preview
 #Preview {
