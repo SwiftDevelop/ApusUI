@@ -23,7 +23,7 @@ public extension UICollectionView {
     ///   - scrollDirection: 레이아웃의 스크롤 방향.
     public convenience init(
         layout: UICollectionViewFlowLayout = .init(),
-        scrollDirection: UICollectionView.ScrollDirection = .vertical
+        scrollDirection: UICollectionView.ScrollDirection
     ) {
         layout.scrollDirection = scrollDirection
         self.init(frame: .zero, collectionViewLayout: layout)
