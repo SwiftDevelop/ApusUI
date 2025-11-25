@@ -46,6 +46,14 @@ final class CompositionalLayoutExampleViewController: UIViewController {
         .register(UICollectionViewCell.self)
         .registerHeader(UICollectionReusableView.self)
         .registerFooter(UICollectionReusableView.self)
+        .refreshControl(refreshControl)
+    }()
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        UIRefreshControl()
+            .onChange { [weak self] in
+                self?.refreshData()
+            }
     }()
     
     private var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -89,10 +97,10 @@ final class CompositionalLayoutExampleViewController: UIViewController {
     
     private func applyData() {
         snapshot.appendSections([.main])
-        Array(1...20).forEach { _ in
-            snapshot.appendItems([Item(color: .lightGray)], toSection: .main)
+        Array(1...10).forEach { i in
+            snapshot.appendItems([Item(color: .black.withAlphaComponent(CGFloat(i) / 10))], toSection: .main)
         }
-        collectionView.apply(snapshot: snapshot, animatingDifferences: false)
+        collectionView.apply(snapshot: snapshot)
     }
     
     private func updateData(at indexPath: IndexPath) {
@@ -100,7 +108,13 @@ final class CompositionalLayoutExampleViewController: UIViewController {
         let selectedItem = items.remove(at: indexPath.item)
         items.insert(selectedItem, at: 0)
         snapshot.appendItems(items, toSection: .main)
-        collectionView.apply(snapshot: snapshot, animatingDifferences: true)
+        collectionView.apply(snapshot: snapshot)
+    }
+    
+    private func refreshData() {
+        snapshot.deleteAllItems()
+        applyData()
+        refreshControl.endRefreshing()
     }
 }
 

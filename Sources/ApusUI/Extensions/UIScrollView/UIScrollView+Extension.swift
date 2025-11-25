@@ -101,4 +101,13 @@ public extension UIScrollView {
         
         return self
     }
+    
+    /// 스크롤 뷰에 `UIRefreshControl`을 설정합니다.
+    /// - Parameter refreshControl: 스크롤 뷰에 추가할 `UIRefreshControl` 인스턴스.
+    /// - Returns: 체이닝을 위한 UIScrollView 인스턴스.
+    @discardableResult
+    func refreshControl(_ refreshControl: UIRefreshControl?) -> Self {
+        self.refreshControl = refreshControl
+        return self
+    }
 }
