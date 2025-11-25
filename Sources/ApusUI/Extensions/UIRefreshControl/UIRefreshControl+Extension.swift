@@ -9,27 +9,30 @@ import UIKit
 
 // MARK: - AssociatedKey
 @MainActor private struct AssociatedKey {
-    static var refreshAction: UInt8 = 0
+    static var refreshActionKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
 private final class ActionWrapper {
-    let action: () -> Void
+    let action: (UIRefreshControl) -> Void
+    weak var control: UIRefreshControl?
     
-    init(action: @escaping () -> Void) {
+    init(action: @escaping (UIRefreshControl) -> Void, control: UIRefreshControl?) {
         self.action = action
+        self.control = control
     }
     
     @MainActor @objc func invoke() {
-        action()
+        guard let control = control else { return }
+        action(control)
     }
 }
 
 // MARK: - Initialization
 public extension UIRefreshControl {
     /// 새로고침 액션을 포함하는 `UIRefreshControl`을 생성합니다.
-    /// - Parameter action: 새로고침이 트리거될 때 실행될 클로저입니다.
-    convenience init(action: @escaping () -> Void) {
+    /// - Parameter action: 새로고침이 트리거될 때 실행될 클로저입니다. 클로저는 `UIRefreshControl` 인스턴스를 파라미터로 받습니다.
+    convenience init(action: @escaping (UIRefreshControl) -> Void) {
         self.init()
         self.onChange(action)
     }
@@ -56,11 +59,11 @@ public extension UIRefreshControl {
     /// 새로고침이 트리거될 때 호출될 액션을 등록합니다.
     ///
     /// - Warning: 클로저 내에서 `self`를 참조할 경우, 메모리 누수를 방지하기 위해 `[weak self]`를 사용해야 합니다.
-    /// - Parameter action: 새로고침이 트리거될 때 실행될 클로저입니다.
+    /// - Parameter action: 새로고침이 트리거될 때 실행될 클로저입니다. 클로저는 `UIRefreshControl` 인스턴스를 파라미터로 받습니다.
     @discardableResult
-    func onChange(_ action: @escaping () -> Void) -> Self {
-        let wrapper = ActionWrapper(action: action)
-        objc_setAssociatedObject(self, &AssociatedKey.refreshAction, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    func onChange(_ action: @escaping (UIRefreshControl) -> Void) -> Self {
+        let wrapper = ActionWrapper(action: action, control: self)
+        objc_setAssociatedObject(self, &AssociatedKey.refreshActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke), for: .valueChanged)
         return self
     }

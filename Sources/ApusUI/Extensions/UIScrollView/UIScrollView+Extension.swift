@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKeys
 @MainActor private enum AssociatedKeys {
-    static var contentOffsetObservations: UInt8 = 0
+    static var contentOffsetObservationsKey: UInt8 = 0
 }
 
 // MARK: - KVOObserver
@@ -92,22 +92,43 @@ public extension UIScrollView {
     @MainActor
     @discardableResult
     func onContentOffsetChange(_ action: @escaping @MainActor (CGPoint) -> Void) -> Self {
-        var observers = objc_getAssociatedObject(self, &AssociatedKeys.contentOffsetObservations) as? [KVOObserver] ?? []
+        var observers = objc_getAssociatedObject(self, &AssociatedKeys.contentOffsetObservationsKey) as? [KVOObserver] ?? []
         
         let observer = KVOObserver(scrollView: self, action: action)
         observers.append(observer)
         
-        objc_setAssociatedObject(self, &AssociatedKeys.contentOffsetObservations, observers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.contentOffsetObservationsKey, observers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         return self
     }
     
-    /// 스크롤 뷰에 `UIRefreshControl`을 설정합니다.
-    /// - Parameter refreshControl: 스크롤 뷰에 추가할 `UIRefreshControl` 인스턴스.
+    /// [편의성] 스크롤 뷰에 "pull-to-refresh" 기능을 추가합니다.
+    ///
+    /// 이 메서드는 내부적으로 `UIRefreshControl`을 생성하고 액션을 설정합니다.
+    ///
+    /// - Warning: 클로저 내에서 `self`를 참조할 경우, 메모리 누수를 방지하기 위해 `[weak self]`를 사용해야 합니다.
+    /// - Parameter action: 새로고침이 트리거될 때 실행될 클로저입니다. 클로저는 생성된 `UIRefreshControl` 인스턴스를 파라미터로 받습니다.
     /// - Returns: 체이닝을 위한 UIScrollView 인스턴스.
     @discardableResult
-    func refreshControl(_ refreshControl: UIRefreshControl?) -> Self {
+    func onRefresh(_ action: @escaping (UIRefreshControl) -> Void) -> Self {
+        let refreshControl = UIRefreshControl(action: action)
         self.refreshControl = refreshControl
+        return self
+    }
+    
+    /// [사용자 정의] 제공된 `UIRefreshControl` 인스턴스를 사용하여 "pull-to-refresh" 기능을 추가합니다.
+    ///
+    /// 이 메서드는 사용자가 미리 커스텀한 `UIRefreshControl`에 액션을 설정하고 스크롤 뷰에 연결할 때 사용합니다.
+    ///
+    /// - Warning: 클로저 내에서 `self`를 참조할 경우, 메모리 누수를 방지하기 위해 `[weak self]`를 사용해야 합니다.
+    /// - Parameters:
+    ///   - control: 사용자가 직접 생성하고 설정한 `UIRefreshControl` 인스턴스.
+    ///   - action: 새로고침이 트리거될 때 실행될 클로저입니다. 클로저는 제공된 `UIRefreshControl` 인스턴스를 파라미터로 받습니다.
+    /// - Returns: 체이닝을 위한 UIScrollView 인스턴스.
+    @discardableResult
+    func onRefresh(control: UIRefreshControl, action: @escaping (UIRefreshControl) -> Void) -> Self {
+        control.onChange(action)
+        self.refreshControl = control
         return self
     }
 }

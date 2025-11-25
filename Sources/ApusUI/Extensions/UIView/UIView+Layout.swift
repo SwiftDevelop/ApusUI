@@ -9,8 +9,8 @@ import UIKit
 
 // MARK: - AssociatedKeys
 @MainActor private enum AssociatedKeys {
-    static var pendingConstraints: UInt8 = 0
-    static var ignoredSafeAreaEdges: UInt8 = 1
+    static var pendingConstraintsKey: UInt8 = 0
+    static var ignoredSafeAreaEdgesKey: UInt8 = 1
 }
 
 // MARK: - Internal Extensions
@@ -18,20 +18,20 @@ internal extension UIView {
     /// 뷰가 슈퍼뷰에 추가되기 전에 임시로 저장되는 제약 조건 클로저 배열입니다.
     fileprivate var pendingConstraints: [() -> Void] {
         get {
-            objc_getAssociatedObject(self, &AssociatedKeys.pendingConstraints) as? [() -> Void] ?? []
+            objc_getAssociatedObject(self, &AssociatedKeys.pendingConstraintsKey) as? [() -> Void] ?? []
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.pendingConstraints, newValue, .OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &AssociatedKeys.pendingConstraintsKey, newValue, .OBJC_ASSOCIATION_RETAIN)
         }
     }
     
     /// `padding` 적용 시 무시할 safe area 가장자리입니다.
     fileprivate var ignoredSafeAreaEdges: UIRectEdge {
         get {
-            objc_getAssociatedObject(self, &AssociatedKeys.ignoredSafeAreaEdges) as? UIRectEdge ?? []
+            objc_getAssociatedObject(self, &AssociatedKeys.ignoredSafeAreaEdgesKey) as? UIRectEdge ?? []
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.ignoredSafeAreaEdges, newValue, .OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(self, &AssociatedKeys.ignoredSafeAreaEdgesKey, newValue, .OBJC_ASSOCIATION_RETAIN)
         }
     }
     

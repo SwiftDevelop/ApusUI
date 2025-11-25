@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKeys
 @MainActor private enum AssociatedKeys {
-    static var actionObservation: UInt8 = 0
+    static var actionObservationKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
@@ -35,9 +35,9 @@ public extension UIButton {
     func onAction(for controlEvents: UIControl.Event = .touchUpInside, _ action: @escaping (UIButton) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action)
         
-        var actions = objc_getAssociatedObject(self, &AssociatedKeys.actionObservation) as? [ActionWrapper] ?? []
+        var actions = objc_getAssociatedObject(self, &AssociatedKeys.actionObservationKey) as? [ActionWrapper] ?? []
         actions.append(wrapper)
-        objc_setAssociatedObject(self, &AssociatedKeys.actionObservation, actions, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.actionObservationKey, actions, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke(_:)), for: controlEvents)
         return self

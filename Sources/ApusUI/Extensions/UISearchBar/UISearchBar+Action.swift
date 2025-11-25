@@ -9,8 +9,8 @@ import UIKit
 
 // MARK: - Delegate Handler
 @MainActor private enum AssociatedKeys {
-    static var delegateHandler: UInt8 = 0
-    static var cancelButtonMode: UInt8 = 1
+    static var delegateHandlerKey: UInt8 = 0
+    static var cancelButtonModeKey: UInt8 = 1
 }
 
 internal final class SearchBarDelegateHandler: NSObject, UISearchBarDelegate {
@@ -56,21 +56,21 @@ internal final class SearchBarDelegateHandler: NSObject, UISearchBarDelegate {
 // MARK: - Internal Properties
 internal extension UISearchBar {
     var delegateHandler: SearchBarDelegateHandler {
-        if let handler = objc_getAssociatedObject(self, &AssociatedKeys.delegateHandler) as? SearchBarDelegateHandler {
+        if let handler = objc_getAssociatedObject(self, &AssociatedKeys.delegateHandlerKey) as? SearchBarDelegateHandler {
             return handler
         }
         let handler = SearchBarDelegateHandler()
-        objc_setAssociatedObject(self, &AssociatedKeys.delegateHandler, handler, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.delegateHandlerKey, handler, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         self.delegate = handler
         return handler
     }
     
     var cancelButtonMode: CancelButtonMode {
         get {
-            objc_getAssociatedObject(self, &AssociatedKeys.cancelButtonMode) as? CancelButtonMode ?? .none
+            objc_getAssociatedObject(self, &AssociatedKeys.cancelButtonModeKey) as? CancelButtonMode ?? .none
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.cancelButtonMode, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &AssociatedKeys.cancelButtonModeKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }

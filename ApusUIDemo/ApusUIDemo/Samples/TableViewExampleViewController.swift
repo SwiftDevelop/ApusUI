@@ -27,13 +27,8 @@ final class TableViewExampleViewController: UIViewController {
     private lazy var tableView: UITableView = {
         UITableView(style: .grouped)
             .register(cell: UITableViewCell.self)
-            .refreshControl(refreshControl)
-    }()
-    
-    private lazy var refreshControl: UIRefreshControl = {
-        UIRefreshControl()
-            .onChange { [weak self] in
-                self?.refreshItems()
+            .onRefresh { [weak self] refreshControl in
+                self?.refreshItems(with: refreshControl)
             }
     }()
     
@@ -67,16 +62,19 @@ final class TableViewExampleViewController: UIViewController {
         tableView.reloadData()
     }
     
-    private func refreshItems() {
-        items = [
-            Item(title: "가", textes: ["가나", "가다", "가라", "가마", "가사", "가자"]),
-            Item(title: "나", textes: ["나가", "나다", "나라", "나비", "나사"]),
-            Item(title: "다", textes: ["다리", "다리미"]),
-            Item(title: "라", textes: ["라디오"]),
-            Item(title: "마", textes: ["마늘", "마차"]),
-        ]
-        tableView.reloadData()
-        refreshControl.endRefreshing()
+    private func refreshItems(with refreshControl: UIRefreshControl) {
+        // Simulate a network request
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            self?.items = [
+                Item(title: "가", textes: ["가나", "가다", "가라", "가마", "가사", "가자"]),
+                Item(title: "나", textes: ["나가", "나다", "나라", "나비", "나사"]),
+                Item(title: "다", textes: ["다리", "다리미"]),
+                Item(title: "라", textes: ["라디오"]),
+                Item(title: "마", textes: ["마늘", "마차"]),
+            ]
+            self?.tableView.reloadData()
+            refreshControl.endRefreshing()
+        }
     }
 }
 

@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKey
 @MainActor private struct AssociatedKey {
-    static var switchAction: UInt8 = 0
+    static var switchActionKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
@@ -44,7 +44,7 @@ public extension UISwitch {
     @discardableResult
     func isOn(_ on: Bool) -> Self {
         self.isOn = on
-        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.switchAction) as? ActionWrapper {
+        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.switchActionKey) as? ActionWrapper {
             wrapper.invoke()
         }
         return self
@@ -69,7 +69,7 @@ public extension UISwitch {
     @discardableResult
     func onChange(_ action: @escaping (Bool) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action, control: self)
-        objc_setAssociatedObject(self, &AssociatedKey.switchAction, wrapper, .OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(self, &AssociatedKey.switchActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN)
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke), for: .valueChanged)
         return self
     }

@@ -11,18 +11,10 @@ import ApusUI
 final class CollectionViewExampleViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
-        UICollectionView(scrollDirection: .vertical)
+        return UICollectionView(scrollDirection: .vertical)
             .register(UICollectionViewCell.self)
             .minimumSpacing(line: spacing, interItem: spacing)
             .contentInset(left: spacing, right: spacing)
-            .refreshControl(refreshControl)
-    }()
-    
-    private lazy var refreshControl: UIRefreshControl = {
-        UIRefreshControl()
-            .onChange { [weak self] in
-                self?.refreshItems()
-            }
     }()
     
     private var items: [UIColor] = [.red, .systemRed, .orange, .systemOrange, .yellow, .systemYellow, .green, .systemGreen, .blue, .systemBlue, .purple, .systemPurple]
@@ -43,6 +35,9 @@ final class CollectionViewExampleViewController: UIViewController {
                 .onSelect { [weak self] indexPath in
                     self?.updateItems(at: indexPath)
                 }
+                .onRefresh { [weak self] refreshControl in
+                    self?.refreshItems(with: refreshControl)
+                }
                 .padding()
         }
     }
@@ -53,7 +48,7 @@ final class CollectionViewExampleViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    private func refreshItems() {
+    private func refreshItems(with refreshControl: UIRefreshControl) {
         items = [.red, .systemRed, .orange, .systemOrange, .yellow, .systemYellow, .green, .systemGreen, .blue, .systemBlue, .purple, .systemPurple]
         collectionView.reloadData()
         refreshControl.endRefreshing()

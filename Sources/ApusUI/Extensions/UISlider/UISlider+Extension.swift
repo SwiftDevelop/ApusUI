@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKey
 @MainActor private struct AssociatedKey {
-    static var sliderAction: UInt8 = 0
+    static var sliderActionKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
@@ -46,7 +46,7 @@ public extension UISlider {
     @discardableResult
     func value(_ value: Float, animated: Bool = false) -> Self {
         self.setValue(value, animated: animated)
-        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.sliderAction) as? ActionWrapper {
+        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.sliderActionKey) as? ActionWrapper {
             wrapper.invoke()
         }
         return self
@@ -113,7 +113,7 @@ public extension UISlider {
     @discardableResult
     func onChange(_ action: @escaping (Float) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action, control: self)
-        objc_setAssociatedObject(self, &AssociatedKey.sliderAction, wrapper, .OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(self, &AssociatedKey.sliderActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN)
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke), for: .valueChanged)
         return self
     }

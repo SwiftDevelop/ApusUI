@@ -7,8 +7,8 @@
 
 import UIKit
 
-// MARK: - DiffableDataSourceAssociatedKeys
-@MainActor private enum DiffableDataSourceAssociatedKeys {
+// MARK: - AssociatedKeys
+@MainActor private enum AssociatedKeys {
     static var dataSourceKey: UInt8 = 0
 }
 
@@ -37,7 +37,7 @@ public extension UICollectionView {
         
         objc_setAssociatedObject(
             self,
-            &DiffableDataSourceAssociatedKeys.dataSourceKey,
+            &AssociatedKeys.dataSourceKey,
             diffableDataSource,
             .OBJC_ASSOCIATION_RETAIN_NONATOMIC
         )
@@ -73,7 +73,7 @@ public extension UICollectionView {
         
         objc_setAssociatedObject(
             self,
-            &DiffableDataSourceAssociatedKeys.dataSourceKey,
+            &AssociatedKeys.dataSourceKey,
             diffableDataSource,
             .OBJC_ASSOCIATION_RETAIN_NONATOMIC
         )
@@ -92,7 +92,7 @@ public extension UICollectionView {
         snapshot: NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>,
         animatingDifferences: Bool = true
     ) {
-        guard let dataSource = objc_getAssociatedObject(self, &DiffableDataSourceAssociatedKeys.dataSourceKey)
+        guard let dataSource = objc_getAssociatedObject(self, &AssociatedKeys.dataSourceKey)
                 as? UICollectionViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType> else {
             print("Warning: DiffableDataSource was not configured using .dataSource() method before calling .apply().")
             return

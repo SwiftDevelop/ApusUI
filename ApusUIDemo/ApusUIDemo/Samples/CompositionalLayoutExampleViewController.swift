@@ -46,14 +46,6 @@ final class CompositionalLayoutExampleViewController: UIViewController {
         .register(UICollectionViewCell.self)
         .registerHeader(UICollectionReusableView.self)
         .registerFooter(UICollectionReusableView.self)
-        .refreshControl(refreshControl)
-    }()
-    
-    private lazy var refreshControl: UIRefreshControl = {
-        UIRefreshControl()
-            .onChange { [weak self] in
-                self?.refreshData()
-            }
     }()
     
     private var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
@@ -89,6 +81,9 @@ final class CompositionalLayoutExampleViewController: UIViewController {
                 .onSelect { [weak self] indexPath in
                     self?.updateData(at: indexPath)
                 }
+                .onRefresh { [weak self] refreshControl in
+                    self?.refreshData(with: refreshControl)
+                }
                 .padding()
         }
         
@@ -111,7 +106,7 @@ final class CompositionalLayoutExampleViewController: UIViewController {
         collectionView.apply(snapshot: snapshot)
     }
     
-    private func refreshData() {
+    private func refreshData(with refreshControl: UIRefreshControl) {
         snapshot.deleteAllItems()
         applyData()
         refreshControl.endRefreshing()

@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKey
 @MainActor private struct AssociatedKey {
-    static var pageAction: UInt8 = 0
+    static var pageActionKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
@@ -82,7 +82,7 @@ public extension UIPageControl {
     @discardableResult
     func onChange(_ action: @escaping (Int) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action, control: self)
-        objc_setAssociatedObject(self, &AssociatedKey.pageAction, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKey.pageActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke), for: .valueChanged)
         return self
     }

@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - AssociatedKey
 @MainActor private struct AssociatedKey {
-    static var segmentAction: UInt8 = 0
+    static var segmentActionKey: UInt8 = 0
 }
 
 // MARK: - ActionWrapper
@@ -47,7 +47,7 @@ public extension UISegmentedControl {
     @discardableResult
     func onChange(_ action: @escaping (Int) -> Void) -> Self {
         let wrapper = ActionWrapper(action: action, control: self)
-        objc_setAssociatedObject(self, &AssociatedKey.segmentAction, wrapper, .OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(self, &AssociatedKey.segmentActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN)
         self.addTarget(wrapper, action: #selector(ActionWrapper.invoke), for: .valueChanged)
         return self
     }
@@ -71,7 +71,7 @@ public extension UISegmentedControl {
     func selectedSegmentIndex(_ index: Int) -> Self {
         self.selectedSegmentIndex = index
         
-        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.segmentAction) as? ActionWrapper {
+        if let wrapper = objc_getAssociatedObject(self, &AssociatedKey.segmentActionKey) as? ActionWrapper {
             wrapper.invoke()
         }
         return self

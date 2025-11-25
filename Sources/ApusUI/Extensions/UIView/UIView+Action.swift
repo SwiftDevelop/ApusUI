@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor private enum AssociatedKeys {
-    static var tapAction: UInt8 = 0
+    static var tapActionKey: UInt8 = 0
 }
 
 private final class TapActionWrapper {
@@ -31,7 +31,7 @@ public extension UIView {
     func onTapGesture(_ action: @escaping () -> Void) -> Self {
         self.isUserInteractionEnabled = true
         let wrapper = TapActionWrapper(action: action)
-        objc_setAssociatedObject(self, &AssociatedKeys.tapAction, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &AssociatedKeys.tapActionKey, wrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         let tapGesture = UITapGestureRecognizer(target: wrapper, action: #selector(TapActionWrapper.invoke))
         self.addGestureRecognizer(tapGesture)
