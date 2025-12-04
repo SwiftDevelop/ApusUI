@@ -16,7 +16,7 @@ public extension UIProgressView {
     ///   - autoHide: 진행률이 0 또는 1일 때 프로그레스 뷰를 자동으로 숨길지 여부를 결정합니다. 기본값은 `false`입니다.
     /// - Returns: 체이닝을 위한 `UIProgressView` 인스턴스.
     @discardableResult
-    func progress(_ progress: Float, animated: Bool = false, autoHide: Bool = false) -> Self {
+    func progress(_ progress: Float, animated: Bool = false, autoHide: Bool = true) -> Self {
         self.setProgress(progress, animated: animated)
         if autoHide {
             // isHidden 로직을 여기에 통합합니다.

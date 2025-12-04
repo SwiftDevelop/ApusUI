@@ -2,38 +2,11 @@
 //  WKWebView+Extension.swift
 //  ApusUI
 //
-//  Created by JJP on 2025/11/26.
+//  Created by SwiftDevelop on 2025/11/26.
 //
 
 import WebKit
 import UIKit
-import Foundation
-
-// MARK: - AssociatedKeys for onProgress
-@MainActor private enum ProgressAssociatedKeys {
-    static var estimatedProgressObservationKey: UInt8 = 0
-}
-
-// MARK: - KVOObserver for estimatedProgress
-@MainActor private final class WKWebViewProgressObserver: NSObject {
-    private let action: @MainActor (Double) -> Void
-    private var observation: NSKeyValueObservation?
-
-    init(webView: WKWebView, action: @escaping @MainActor (Double) -> Void) {
-        self.action = action
-        super.init()
-        self.observation = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] _, change in
-            guard let self, let value = change.newValue else { return }
-            DispatchQueue.main.async {
-                self.action(value)
-            }
-        }
-    }
-
-    deinit {
-        observation?.invalidate()
-    }
-}
 
 // MARK: - Initialization
 public extension WKWebView {
@@ -64,28 +37,75 @@ public extension WKWebView {
             self.load(URLRequest(url: url))
         }
     }
+
+    // MARK: - Loading
+    /// 지정된 `URL`을 `WKWebView`에 로드합니다.
+    ///
+    /// - Parameter url: 로드할 `URL` 객체.
+    /// - Returns: 체이닝을 위한 `WKWebView` 인스턴스.
+    @discardableResult
+    func load(_ url: URL) -> Self {
+        self.load(URLRequest(url: url))
+        return self
+    }
+    
+    /// 지정된 URL 문자열을 `WKWebView`에 로드합니다.
+    ///
+    /// - Parameter urlString: 로드할 URL 문자열.
+    /// - Returns: 체이닝을 위한 `WKWebView` 인스턴스.
+    @discardableResult
+    func load(_ urlString: String) -> Self {
+        if let url = URL(string: urlString) {
+            self.load(URLRequest(url: url))
+        }
+        return self
+    }
 }
 
-// MARK: - Extension for onProgress
+// MARK: - JavaScript Interaction
 public extension WKWebView {
-    /// `estimatedProgress` 값이 변경될 때마다 호출될 액션을 등록합니다.
+    /// 웹뷰에서 JavaScript 코드를 실행하고 그 결과를 비동기적으로 받습니다.
     ///
-    /// - Warning: 클로저 내에서 `WKWebView`를 소유하는 객체(`self`)를 강하게 참조(`self` 사용)하면
-    ///            강한 순환 참조(retain cycle)가 발생하여 메모리 릭으로 이어질 수 있습니다.
-    ///            이를 방지하기 위해 클로저 캡처 리스트에 `[weak self]` 또는 `[unowned self]`를 사용하여
-    ///            `self`를 약하게 또는 미소유 참조로 캡처해야 합니다.
-    /// - Parameter action: `estimatedProgress`의 새 `Double` 값을 파라미터로 받는 클로저입니다 (0.0 ~ 1.0).
+    /// - Warning: 클로저 내에서 `self`를 참조할 경우, 메모리 누수를 방지하기 위해 `[weak self]`를 사용해야 합니다.
+    /// - Note: 이 메소드는 메인 스레드에서 호출되어야 하며, `completion` 클로저도 메인 스레드에서 실행됩니다.
+    /// - Parameters:
+    ///   - script: 웹뷰 내에서 실행할 JavaScript 코드 문자열.
+    ///   - completion: JavaScript 실행 결과(`Any?`) 또는 에러(`Error`)를 `Result` 타입으로 받는 클로저.
+    ///                 결과가 없는 성공적인 실행의 경우 `Result.success(nil)`로 전달됩니다.
     /// - Returns: 체이닝을 위한 `WKWebView` 인스턴스.
     @MainActor
     @discardableResult
-    func onProgress(_ action: @escaping @MainActor (Double) -> Void) -> Self {
-        var observers = objc_getAssociatedObject(self, &ProgressAssociatedKeys.estimatedProgressObservationKey) as? [WKWebViewProgressObserver] ?? []
+    func evaluateJavaScript(_ script: String, completion: ((Result<Any?, Error>) -> Void)? = nil) -> Self {
+        self.evaluateJavaScript(script) { result, error in
+            if let error = error {
+                completion?(.failure(error))
+            } else {
+                completion?(.success(result))
+            }
+        }
+        return self
+    }
+}
 
-        let observer = WKWebViewProgressObserver(webView: self, action: action)
-        observers.append(observer)
+// MARK: - Delegate Connectors
+public extension WKWebView {
+    /// `WKWebView`의 `navigationDelegate`를 설정합니다.
+    ///
+    /// - Parameter delegate: `navigationDelegate`로 설정할 객체.
+    /// - Returns: 체이닝을 위한 `WKWebView` 인스턴스.
+    @discardableResult
+    func navigationDelegate(_ delegate: WKNavigationDelegate?) -> Self {
+        self.navigationDelegate = delegate
+        return self
+    }
 
-        objc_setAssociatedObject(self, &ProgressAssociatedKeys.estimatedProgressObservationKey, observers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
+    /// `WKWebView`의 `uiDelegate`를 설정합니다.
+    ///
+    /// - Parameter delegate: `uiDelegate`로 설정할 객체.
+    /// - Returns: 체이닝을 위한 `WKWebView` 인스턴스.
+    @discardableResult
+    func uiDelegate(_ delegate: WKUIDelegate?) -> Self {
+        self.uiDelegate = delegate
         return self
     }
 }
